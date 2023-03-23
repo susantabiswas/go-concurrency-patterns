@@ -1,3 +1,6 @@
 go 1.18
 
-use ./generator
+use (
+	./fanInOut
+	./generator
+)
