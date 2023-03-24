@@ -7,6 +7,9 @@
 
 	The consumer can keep receiving data from producer channel until
 	producer has signalled that it will no longer publish data.
+
+	NOTE: close() should be called by the producer otherwise it will 
+	create a go panic
 */
 package main
 
