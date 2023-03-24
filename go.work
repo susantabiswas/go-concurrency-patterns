@@ -7,4 +7,5 @@ use (
 	./quit
 	./rangeClose
 	./sequence
+	./timeout
 )
