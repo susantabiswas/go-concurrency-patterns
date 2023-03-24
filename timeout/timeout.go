@@ -12,13 +12,19 @@ import (
 	"time"
 )
 
-// Infinitely produces random numbers
-func producer() <-chan int {
+// Infinitely produces random numbers until quit received
+func producer(quit <-chan bool) <-chan int {
 	channel := make(chan int)
 
 	go func() {
 		for {
-			channel <- rand.Intn(100)
+			select {
+				case <-quit:
+					fmt.Print("Quit signal received\n")
+					return
+				default:
+					channel <- rand.Intn(100)
+			}
 		}
 	}()
 	return channel
@@ -42,6 +48,11 @@ func consumer(input <-chan int) {
 }
 
 func main() {
-	producerChannel := producer()
+	quit := make(chan bool)
+	producerChannel := producer(quit)
 	consumer(producerChannel)
+
+	close(quit)
+
+	time.Sleep(time.Second * 1)
 }
