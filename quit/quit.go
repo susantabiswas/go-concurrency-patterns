@@ -22,16 +22,23 @@ func producer(nums ...int) <-chan int {
 	return channel
 }
 
-func consumer(input <-chan int, quit <-chan bool) {
+func consumer(input <-chan int, quit chan bool) {
 	for {
 		select {
 			case data := <- input:
 				fmt.Printf("Data received: %d\n", data)
 			case <- quit:
-				fmt.Printf("Quit signalled\n")
+				fmt.Printf("Quit signalled from main\n")
+				cleanup()
+				// Send the Acknowledgement to the caller, that it can exit
+				quit <- true
 				return
 		}
 	}
+}
+
+func cleanup() {
+	fmt.Println("Performed cleanup....")
 }
 
 func main() {
@@ -44,5 +51,6 @@ func main() {
 	// quit the consumer activity
 	quit <- true
 
-	time.Sleep(time.Duration(1 * time.Second))
+	fmt.Printf("Main signalled quit, waiting for the ACK from the goroutine to exit..\n")
+	fmt.Printf("Main received ACK from goroutine: %t\n", <-quit)
 }
