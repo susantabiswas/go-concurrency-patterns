@@ -4,6 +4,7 @@ use (
 	./fanInOut
 	./forSelect
 	./generator
+	./quit
 	./rangeClose
 	./sequence
 )
